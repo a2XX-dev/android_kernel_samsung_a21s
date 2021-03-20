@@ -246,25 +246,9 @@ quiet_cmd_gzip = GZIP    $@
 cmd_gzip = (cat $(filter-out FORCE,$^) | gzip -n -f -9 > $@) || \
 	(rm -f $@ ; false)
 
-# DTC
-# ---------------------------------------------------------------------------
-DTC ?= $(objtree)/scripts/dtc/dtc
 
 # Overlay support
 DTC_FLAGS += -@
-
-# Disable noisy checks by default
-ifeq ($(findstring 1,$(KBUILD_ENABLE_EXTRA_GCC_CHECKS)),)
-DTC_FLAGS += -Wno-unit_address_vs_reg \
-	-Wno-unit_address_format \
-	-Wno-avoid_unnecessary_addr_size \
-	-Wno-alias_paths \
-	-Wno-graph_child_address \
-	-Wno-graph_port \
-	-Wno-simple_bus_reg \
-	-Wno-unique_unit_address \
-	-Wno-pci_device_reg
-endif
 
 ifneq ($(findstring 2,$(KBUILD_ENABLE_EXTRA_GCC_CHECKS)),)
 DTC_FLAGS += -Wnode_name_chars_strict \
@@ -303,6 +287,8 @@ show_dtc_error =                                                          \
 	rm $1;                                                            \
 	false;                                                            \
 )
+
+DTC = $(srctree)/tools/dtc
 
 quiet_cmd_dtc = DTC     $@
 cmd_dtc = mkdir -p $(dir ${dtc-tmp}) ; \
